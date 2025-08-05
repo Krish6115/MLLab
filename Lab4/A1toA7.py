@@ -12,10 +12,6 @@ def get_data_csv(csv):
     d = pd.read_csv(csv)
     return d
 
-def get_data_excel(excel, sheet):
-    d = pd.read_excel(excel, sheet_name=sheet)
-    return d
-
 #============ #A1 =================================
 print("\n\n==========A1===========")
 csv = "classification_data.csv"
