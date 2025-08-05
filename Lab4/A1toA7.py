@@ -65,32 +65,35 @@ print("F1Score", FbScore(cm_test, 1),
 
 #============ #A2 =================================
 print("\n\n==========A2===========")
-# Update the Excel file path and sheet name accordingly
-excel = "../Lab_session_Data.xlsx"
-sheet = "Purchase data"
-try:
-    dataP = get_data_excel(excel, sheet)
-    X = dataP.iloc[:, 1:4]
-    y = dataP.iloc[:, 4]
+def get_data_csv(csv):
+    d = pd.read_csv(csv)
+    return d
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+# Load the new CSV file
+csv = "classification_data.csv"
+data = get_data_csv(csv)
 
-    n = KNeighborsClassifier(n_neighbors=3)
-    n.fit(X_train, y_train)
-    y_pred = n.predict(X_test)
+# Prepare features and labels
+X = data[['feature1', 'feature2']]
+y = data['class']
 
-    mse = mean_squared_error(y_test, y_pred)
-    rmse = np.sqrt(mse)
-    mape = mean_absolute_percentage_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)  
 
-    print(f"MSE  : {mse:.4f}")
-    print(f"RMSE : {rmse:.4f}")
-    print(f"MAPE : {mape * 100:.2f}%")
-    print(f"R²   : {r2:.4f}")
-except Exception as e:
-    print(f"Could not load A2 Excel data: {e}")
+# Create and train the KNN classifier with k=3
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, y_train)
 
+# Predictions
+y_pred = knn.predict(X_test)
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Print confusion matrix and classification metrics
+print("Confusion Matrix:\n", cm)
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+print("Accuracy:", accuracy_score(y_test, y_pred))
 #============ #A3 =================================
 print("\n\n==========A3===========")
 # Simulated data demo scatter plot
